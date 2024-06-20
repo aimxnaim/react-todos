@@ -7,6 +7,12 @@ const initialData = [
     { id: uuidv4(), title: 'Learn React', completed: true }
 ]
 
+const getInitialData = () => {
+    const data = JSON.parse(localStorage.getItem('todos'));
+    if (!data) return []
+    return data
+
+}
 
 import * as React from 'react'
 import List from '@mui/material/List';
@@ -15,7 +21,14 @@ import TodoForm from './TodoForm';
 
 
 function TodoList() {
-    const [todos, setTodos] = React.useState(initialData);
+    const [todos, setTodos] = React.useState(getInitialData);
+
+    React.useEffect(() => {
+        localStorage.setItem(
+            'todos',
+            JSON.stringify(todos)
+        )
+    }, [todos])
 
     const removeTodo = (id) => {
         setTodos((prevTodos) => {
