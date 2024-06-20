@@ -1,35 +1,43 @@
+import { v4 as uuidv4 } from 'uuid';
+
 const initialData = [
-    { id: 1, title: 'Buy Milk', completed: false },
-    { id: 2, title: 'Meeting with Ali', completed: false },
-    { id: 3, title: 'Go to Gym', completed: false },
-    { id: 4, title: 'Learn React', completed: true }
+    { id: uuidv4(), title: 'Buy Milk', completed: false },
+    { id: uuidv4(), title: 'Meeting with Ali', completed: false },
+    { id: uuidv4(), title: 'Go to Gym', completed: false },
+    { id: uuidv4(), title: 'Learn React', completed: true }
 ]
 
 
 import * as React from 'react'
 import List from '@mui/material/List';
 import TodoItem from './TodoItem';
+import TodoForm from './TodoForm';
 
 
 function TodoList() {
     const [todos, setTodos] = React.useState(initialData);
 
-    // const handleToggle = (value) => () => {
-    //     const currentIndex = checked.indexOf(value);
-    //     const newChecked = [...checked];
-
-    //     if (currentIndex === -1) {
-    //         newChecked.push(value);
-    //     } else {
-    //         newChecked.splice(currentIndex, 1);
-    //     }
-
-    //     setChecked(newChecked);
-    // };
-
     const removeTodo = (id) => {
         setTodos((prevTodos) => {
             return prevTodos.filter((todo) => todo.id !== id)
+        })
+    }
+
+    const toggleTodo = (id) => {
+        setTodos((prevTodos) => {
+            return prevTodos.map((todo) => {
+                if (todo.id === id) {
+                    return { ...todo, completed: !todo.completed }
+                } else {
+                    return todo
+                }
+            })
+        })
+    }
+
+    const newTodo = (text) => {
+        setTodos((prevTodos) => {
+            return [...prevTodos, { id: uuidv4(), title: text, completed: false }]
         })
     }
 
@@ -41,9 +49,11 @@ function TodoList() {
                         todo={todo}
                         key={todo.id}
                         removeTodo={() => removeTodo(todo.id)}
+                        toggleTodo={() => toggleTodo(todo.id)}
                     />
                 )
             })}
+            <TodoForm newTodo={newTodo} />
         </List>
     );
 }
